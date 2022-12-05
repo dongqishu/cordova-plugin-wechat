@@ -29,7 +29,9 @@ module.exports = {
     },
 
     openApp: function (onSuccess, onError) {
-        exec(onSuccess, onError, "Wechat", "openApp", []);
+		cordova.require('cordova/channel').onCordovaReady.subscribe(function(){
+			exec(onSuccess, onError, "Wechat", "openApp", []);
+		});
     },
 
     /**

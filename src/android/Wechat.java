@@ -113,6 +113,8 @@ public class Wechat extends CordovaPlugin {
     protected static CordovaPreferences wx_preferences;
     public static String data = "";
 
+	private static CallbackContext mCallbackContext;
+
     @Override
     protected void pluginInitialize() {
 
@@ -762,10 +764,18 @@ public class Wechat extends CordovaPlugin {
     }
 
     protected boolean openApp(CallbackContext callbackContext) {
-        callbackContext.success(Wechat.data);
+        //callbackContext.success(Wechat.data);
         Wechat.data = "";
-
+        mCallbackContext = callbackContext;  
         return true;
     }
+	
+	public  void callJS(String message) {
+      if (mCallbackContext != null) {
+          PluginResult dataResult = new PluginResult(PluginResult.Status.OK, message);
+          dataResult.setKeepCallback(true);// 非常重要
+          mCallbackContext.sendPluginResult(dataResult);
+      }
+  }
 
 }
