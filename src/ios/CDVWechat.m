@@ -12,6 +12,9 @@ static int const MAX_THUMBNAIL_SIZE = 320;
 
 @implementation CDVWechat
 
+static NSString* myAsyncCallBackId = nil;
+static CDVPluginResult *pluginResult = nil;
+
 #pragma mark "API"
 - (void)pluginInitialize {
     NSString* appId = [[self.commandDelegate settings] objectForKey:@"wechatappid"];
@@ -24,7 +27,6 @@ static int const MAX_THUMBNAIL_SIZE = 320;
         
         NSLog(@"cordova-plugin-wechat has been initialized. Wechat SDK Version: %@. APP_ID: %@.", [WXApi getApiVersion], appId);
     }
-    self.wechatData = @"";
 }
 
 - (void)isWXAppInstalled:(CDVInvokedUrlCommand *)command
@@ -35,12 +37,11 @@ static int const MAX_THUMBNAIL_SIZE = 320;
 }
 
 - (void)openApp:(CDVInvokedUrlCommand *)command
-{
-    CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:self.wechatData];
-
-    [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
-    
-    self.wechatData = @"";
+{ 
+    myAsyncCallBackId = command.callbackId;
+    pluginResult = [CDVPluginResult resultWithStatus: CDVCommandStatus_NO_RESULT];
+    [pluginResult setKeepCallbackAsBool:YES];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId: command.callbackId];
 }
 
 - (void)share:(CDVInvokedUrlCommand *)command
@@ -275,6 +276,18 @@ static int const MAX_THUMBNAIL_SIZE = 320;
     return ;
 }
 
+-  (void)  sendCmd : (NSString *)msg
+{
+    if(myAsyncCallBackId != nil)
+    {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: msg ];
+        //将 CDVPluginResult.keepCallback 设置为 true ,则不会销毁callback
+        [pluginResult  setKeepCallbackAsBool:YES];
+        [selfplugin.commandDelegate sendPluginResult:pluginResult callbackId: myAsyncCallBackId];
+
+    }
+}
+
 
 
 #pragma mark "WXApiDelegate"
@@ -288,10 +301,10 @@ static int const MAX_THUMBNAIL_SIZE = 320;
     //获取开放标签传递的 extinfo 数据逻辑
 	if ([req isKindOfClass:[LaunchFromWXReq class]])
 	{
-        	LaunchFromWXReq* wxReq = (LaunchFromWXReq*)req;
+        LaunchFromWXReq* wxReq = (LaunchFromWXReq*)req;
 		WXMediaMessage *msg = wxReq.message;
-        	NSString *extinfo = msg.messageExt;
-		self.wechatData = extinfo;
+        NSString *extinfo = msg.messageExt;
+        [self sendCmd: extinfo ];
 	}
 }
 
