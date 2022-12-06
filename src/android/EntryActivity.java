@@ -1,4 +1,4 @@
-package __PACKAGE_NAME__;
+package com.huayu.quzhanyeapp.wxapi;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -32,7 +32,6 @@ public class EntryActivity extends Activity implements IWXAPIEventHandler {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Wechat.data = "";
 
         IWXAPI api = Wechat.getWxAPI(this);
 
@@ -119,11 +118,15 @@ public class EntryActivity extends Activity implements IWXAPIEventHandler {
             ShowMessageFromWX.Req showReq = (ShowMessageFromWX.Req) req;
             WXMediaMessage mediaMsg = showReq.message;
             String extInfo = mediaMsg.messageExt;
-            Wechat.data = extInfo;
-			//Intent intent = getApplicationContext().getPackageManager().getLaunchIntentForPackage(getApplicationContext().getPackageName());
-            //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            //getApplicationContext().startActivity(intent);
-			Wechat.callJS(extInfo);
+            Wechat.callJS(extInfo);
+            
+            CallbackContext ctx = Wechat.getOpenAppCallbackContext();
+
+            if (ctx == null) {
+                Intent intent = getApplicationContext().getPackageManager().getLaunchIntentForPackage(getApplicationContext().getPackageName());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
+            }
         }
         finish();
     }
