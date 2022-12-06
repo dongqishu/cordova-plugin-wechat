@@ -283,8 +283,7 @@ static CDVPluginResult *pluginResult = nil;
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: msg ];
         //将 CDVPluginResult.keepCallback 设置为 true ,则不会销毁callback
         [pluginResult  setKeepCallbackAsBool:YES];
-        [selfplugin.commandDelegate sendPluginResult:pluginResult callbackId: myAsyncCallBackId];
-
+		[self.commandDelegate sendPluginResult:pluginResult callbackId: myAsyncCallBackId];
     }
 }
 
