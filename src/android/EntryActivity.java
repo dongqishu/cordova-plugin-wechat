@@ -118,7 +118,6 @@ public class EntryActivity extends Activity implements IWXAPIEventHandler {
             ShowMessageFromWX.Req showReq = (ShowMessageFromWX.Req) req;
             WXMediaMessage mediaMsg = showReq.message;
             String extInfo = mediaMsg.messageExt;
-            Wechat.callJS(extInfo);
             
             CallbackContext ctx = Wechat.getOpenAppCallbackContext();
 
@@ -127,6 +126,7 @@ public class EntryActivity extends Activity implements IWXAPIEventHandler {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(intent);
             }
+			Wechat.callJS(extInfo);
         }
         finish();
     }
