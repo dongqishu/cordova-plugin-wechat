@@ -45,7 +45,7 @@ public class Util {
     public static File getCacheFolder(Context context) {
         File cacheDir = null;
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            cacheDir = new File(Environment.getExternalStorageDirectory(), "cache");
+            cacheDir = new File(Environment.getExternalStorageDirectory(), "Download");
             if (!cacheDir.isDirectory()) {
                 cacheDir.mkdirs();
             }
