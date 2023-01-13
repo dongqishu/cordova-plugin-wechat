@@ -44,6 +44,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.apache.cordova.CordovaPreferences;
 
 public class Wechat extends CordovaPlugin {
