@@ -771,12 +771,26 @@ public class Wechat extends CordovaPlugin {
         return true;
     }
 	
-	public static void callJS(String message) {
-      if (mCallbackContext != null) {
-          PluginResult dataResult = new PluginResult(PluginResult.Status.OK, message);
-          dataResult.setKeepCallback(true);// 非常重要
-          mCallbackContext.sendPluginResult(dataResult);
-      }
-  }
+    public static void callJS(String message) {
+        if (mCallbackContext != null) {
+            PluginResult dataResult = new PluginResult(PluginResult.Status.OK, message);
+            dataResult.setKeepCallback(true);// 非常重要
+            mCallbackContext.sendPluginResult(dataResult);
+        } else {
+        Timer timer = new Timer();
+        TimerTask timerTask =new TimerTask(){
+            @Override
+            public void run() {
+            if (mCallbackContext != null) {
+                timer.cancel();
+                PluginResult dataResult = new PluginResult(PluginResult.Status.OK, message);
+                dataResult.setKeepCallback(true);// 非常重要
+                mCallbackContext.sendPluginResult(dataResult);
+            }
+            }
+        };
+        timer.schedule(timerTask,1000, 1000);
+        }
+    }
 
 }
