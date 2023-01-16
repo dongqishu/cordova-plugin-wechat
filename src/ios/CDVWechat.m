@@ -283,7 +283,23 @@ static CDVPluginResult *pluginResult = nil;
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: msg ];
         //将 CDVPluginResult.keepCallback 设置为 true ,则不会销毁callback
         [pluginResult  setKeepCallbackAsBool:YES];
-		[self.commandDelegate sendPluginResult:pluginResult callbackId: myAsyncCallBackId];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId: myAsyncCallBackId];
+    }
+    else {
+        [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerAction:) userInfo:msg repeats:YES];
+    }
+}
+
+- (void) timerAction:(NSTimer *) timer
+{
+    if(myAsyncCallBackId != nil)
+    {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: timer.userInfo ];
+        //将 CDVPluginResult.keepCallback 设置为 true ,则不会销毁callback
+        [pluginResult  setKeepCallbackAsBool:YES];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId: myAsyncCallBackId];
+        [timer invalidate];
+        timer = nil;
     }
 }
 
